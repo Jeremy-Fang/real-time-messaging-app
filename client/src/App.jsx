@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
-import LoginForm from './LoginForm'
-import CreateAccountForm from './CreateAccountForm'
-import MessageDashboard from './MessageDashboard'
-import SearchPage from './Search'
+import LoginForm from './components/LoginForm'
+import CreateAccountForm from './components/CreateAccountForm'
+import MessageDashboard from './components/MessageDashboard'
+import SearchPage from './components/Search'
 
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(false)

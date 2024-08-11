@@ -103,14 +103,7 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
                         <div className='recent-messages-container'>
                             {
                                 chatroomData.map((room, i) => {
-                                    return <RecentMessageCard name={
-                                        room.members.length == 1 ?
-                                            idMap[room.members[0]]
-                                            :
-                                            room.members.map(member => {
-                                                return idMap[member]
-                                            }).join(', ')
-                                    } lastMessage={room.messages.length ? room.messages[room.messages.length - 1] : null} changeSelectedConv={() => setselectedConvo(i)} />
+                                    return <RecentMessageCard members={room.members} messages={room.messages} idMap={idMap} onCustomClick={() => setselectedConvo(i)} />
                                 })
                             }
                         </div>
@@ -118,13 +111,16 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
                     <div className='opened-message-container'>
                         <div className='message-header-group'>
                             <h1>{
-                                selectedConvo == -1 ? null :
-                                    (chatroomData[selectedConvo].members.length == 1 ?
-                                        idMap[chatroomData[selectedConvo].members[0]]
+                                selectedConvo == -1 ?
+                                    null :
+                                    (chatroomData[selectedConvo].members.length == 2 ?
+                                        chatroomData[selectedConvo].members.filter(member => {
+                                            return member != sessionStorage.getItem('uid')
+                                        })
                                         :
-                                        chatroomData[selectedConvo].members.map(member => {
+                                        chatroomData[selectedConvo].members).map(member => {
                                             return idMap[member]
-                                        }).join(', '))
+                                        }).join(', ')
                             }</h1>
                         </div>
                         <div className='messages-container'>
