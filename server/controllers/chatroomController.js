@@ -30,11 +30,10 @@ export const getChatrooms = async (req, res) => {
             $in: [id]
         }})
 
-        let convoPartnerSet = new Set([new mongoose.Types.ObjectId(id)])
+        let convoPartnerSet = new Set()
 
-        // filter the user we're searching fors chatrooms from the members
+        // createa a set of all id's that are members of conversations with the user
         for (let i = 0; i < chatrooms.length; i++) {
-            chatrooms[i].members = chatrooms[i].members.filter(uid => uid != id)
             for (let member of chatrooms[i].members) {
                 convoPartnerSet.add(member)
             }
