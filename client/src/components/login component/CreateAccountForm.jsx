@@ -1,17 +1,22 @@
 import React from 'react'
+import './styles.css'
 
-const LoginForm = ({ login, setPageCreateAccount }) => {
+const CreateAccountForm = ({ setPageToLogin }) => {
   // Function which checks if the form fields are valid
   const isValid = () => {
     const fields = document.getElementsByTagName('input')
+    let valid = true
 
     for (var field of fields) {
       if (field.value == '') {
-        return false
+        valid = false
+        field.classList.add('invalid-input')
+      } else {
+        field.classList.remove('invalid-input')
       }
     }
 
-    return true
+    return valid
   }
 
   // Function which returns the form details in a user object
@@ -26,14 +31,13 @@ const LoginForm = ({ login, setPageCreateAccount }) => {
     return user
   }
 
-  // Makes API request attempting to login the user
-  const attemptLogin = async (user) => {
+  const attemptCreateAccount = async (user) => {
     if (!isValid()) {
       console.log('invalid form input')
       return
     }
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/login`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/signup`, {
       method: 'POST',
       body: JSON.stringify({ ...user }),
       headers: {
@@ -42,30 +46,31 @@ const LoginForm = ({ login, setPageCreateAccount }) => {
     })
 
     if (!response.ok) {
-      console.log('login was not successful')
+      console.log('error creating account')
       return
     }
 
     const data = await response.json()
 
-    if (data.token) {
-      sessionStorage.setItem('token', data.token)
-      sessionStorage.setItem('uid', data.user_id)
-
-      login()
+    if (data.user) {
+      setPageToLogin()
     }
   }
 
   return (
-    <div className='login-page-container'>
-      <div className='login-container'>
+    <div className='page-container'>
+      <div className='form-container'>
+        <input placeholder='Name' />
         <input placeholder='Email' />
         <input placeholder='Password' />
-        <button onClick={() => attemptLogin(getFormDetails())}>Log in</button>
-        <a onClick={setPageCreateAccount}>create account</a>
+        <button onClick={() => attemptCreateAccount(getFormDetails())}>Create Account</button>
+        <div className='sub-text-group'>
+          <div>Already have an account?</div>
+          <a onClick={setPageToLogin}>Login</a>
+        </div>
       </div>
     </div>
   )
 }
 
-export default LoginForm
+export default CreateAccountForm

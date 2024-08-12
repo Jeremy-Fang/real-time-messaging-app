@@ -6,12 +6,11 @@ const SearchPage = ({ socket, openNewConvo }) => {
     const [typingQueue, setTypingQueue] = useState([])
 
     // Create functionality that allows for groups to be formed
-    
     const searchUsers = async (searchKey) => {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/search/${searchKey}`)
         const data = await response.json()
         const filteredData = data.results.filter(entry => entry._id != sessionStorage.getItem('uid'))
-        
+
         setSearchResults(filteredData)
     }
 
@@ -32,7 +31,7 @@ const SearchPage = ({ socket, openNewConvo }) => {
         const data = await response.json()
 
         socket?.emit('create-room', data.chatroom._id)
-        
+
         openNewConvo()
     }
 
@@ -54,26 +53,26 @@ const SearchPage = ({ socket, openNewConvo }) => {
 
     return (
         <>
-        <div>
-            Start a new conversation
-            <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-            {
-                searchResults.length > 0 
-                    ? (
-                        searchResults.map((result, i) => {
-                            return (
-                                <div className='result-row' onClick={ () => createNewChat(i) }>
-                                    {result.name}
-                                </div>
-                            )
-                        })
-                    ) : (
-                        <div>
-                            no matches found
-                        </div>
-                    )
-            }
-        </div>
+            <div>
+                Start a new conversation
+                <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                {
+                    searchResults.length > 0
+                        ? (
+                            searchResults.map((result, i) => {
+                                return (
+                                    <div className='result-row' onClick={() => createNewChat(i)}>
+                                        {result.name}
+                                    </div>
+                                )
+                            })
+                        ) : (
+                            <div>
+                                no matches found
+                            </div>
+                        )
+                }
+            </div>
         </>
     )
 }
