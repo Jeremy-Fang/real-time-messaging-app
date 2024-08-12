@@ -18,7 +18,7 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
         if (responseData.chatrooms.length > 0) {
             setSelected(0)
         }
-        
+
         setChatroomData(responseData.chatrooms)
         setIdMap(responseData.memberMap)
         setSocket(io(import.meta.env.VITE_API_URL))
@@ -112,13 +112,13 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
                                 })
                             }
                         </div>
-                    <div className='logout-button-row'>
-                        <button className='logout' onClick={logout}>logout</button>
+                        <div className='logout-button-row'>
+                            <button className='logout' onClick={logout}>logout</button>
+                        </div>
                     </div>
-                    </div>
-                    <div className='opened-message-container'>
+                    <div className='selected-conversation-container'>
                         <div className='message-header-group'>
-                            <h1>{
+                            <h2>{
                                 selected == -1 ?
                                     null :
                                     (chatroomData[selected].members.length == 2 ?
@@ -129,23 +129,26 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
                                         chatroomData[selected].members).map(member => {
                                             return idMap[member]
                                         }).join(', ')
-                            }</h1>
+                            }</h2>
                         </div>
-                        <div className='messages-container'>
-                            {
-                                selected == -1 ? (
-                                    <>
-                                        <button onClick={() => console.log(selected)}>H</button>
-                                    </>) :
-                                    chatroomData[selected].messages.map((message) => {
-                                        return <MessageComponent message={message} idMap={idMap} />
-                                    })
-                            }
+                        <div className='overflow-container'>
+                            <div className='messages-container'>
+                                {
+                                    selected == -1 ?
+                                        null :
+                                        chatroomData[selected].messages.map((message) => {
+                                            return <MessageComponent message={message} idMap={idMap} />
+                                        })
+                                }
+                            </div>
                         </div>
                         <div className='send-message-group'>
                             <input value={message} onChange={(e) => setMessage(e.target.value)} />
                             <button className='send-message-button' onClick={() => sendMessage()}>Send</button>
                         </div>
+                    </div>
+                    <div className='temp-third-component'>
+                        Hello
                     </div>
                 </div>
             </>

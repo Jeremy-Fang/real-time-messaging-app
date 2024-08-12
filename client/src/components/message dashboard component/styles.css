@@ -5,16 +5,13 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    overflow: hidden;
 }
 
-.side-bar-container > * {
+.side-bar-container>* {
     margin-bottom: 20px;
 }
 
-h2 {
-
-}
+h2 {}
 
 .new-conversation-group {
     display: flex;
@@ -44,9 +41,13 @@ h2 {
 .recent-messages-container {
     height: 80%;
     width: 100%;
-    box-sizing: content-box;
-    padding-right: 40px;
     overflow-y: scroll;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+.recent-messages-container::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
 }
 
 .logout-button-row {
@@ -96,7 +97,8 @@ img {
     text-overflow: ellipsis;
 }
 
-.last-message, .last-message-time {
+.last-message,
+.last-message-time {
     text-wrap: nowrap;
     color: gray;
     overflow: hidden;
@@ -111,135 +113,50 @@ img {
     font-size: 0.6rem;
 }
 
-.opened-message-container {
-    width: 80%;
+.selected-conversation-container {
+    width: 60%;
     height: 100vh;
     background-color: white;
-}
-
-
-/* 
-.side-bar-container>* {
-    margin-bottom: 20px;
-}
-
-.new-conversation-group {
-    width: 100%;
-    padding: 0 20px;
-}
-
-.new-conversation-group>button {
-    margin-right: 20px;
-}
-
-.entry {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
     padding: 20px;
 }
 
-.entry:hover {
-    background-color: green;
+.message-header-group {
+    font-size: 1.2rem;
 }
 
-.entry .message-group {
-    display: flex;
-    width: 50%;
-    justify-content: space-between;
+.message-header-group h2 {
+    font-weight: 400;
+    margin-bottom: 10px;
 }
 
-.message-group .text-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.entry img {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-}
-
-.text-group {
+.overflow-container {
+    max-height: 80%;
     width: 100%;
-}
-
-.text-group .messager-name {
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.text-group .last-message {
-    font-size: 0.7rem;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.entry .last-message-time {
-    font-size: 0.6rem;
-}
-
-.message-avatar {
-    width: 30px;
-    height: 30px;
-}
-
-.messages-container {
-    height: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
+    background-color: green;
+    overflow-y: scroll;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
     margin-bottom: 30px;
 }
 
-.messages-container>div {
+.overflow-container::-webkit-scrollbar { /* WebKit */
+    width: 0;
+    height: 0;
+}
+
+.messages-container {
+    height: 100%;
     display: flex;
-    margin: 20px 30px 10px;
-}
-
-.message-styling {
-    max-width: 60%;
-}
-
-.message-text {
-    font-size: 0.9rem;
-    margin: 5px;
-    padding: 4px;
-    border-radius: 5px;
-}
-
-.message-time {
-    font-size: 0.65rem;
-    display: flex;
-    margin: 0 10px;
-}
-
-.sent-by-other .message-time {
+    flex-direction: column;
     justify-content: end;
-}
-
-.sent-by-me .message-text {
-    background-color: lightskyblue;
-}
-
-.sent-by-other .message-text {
-    background-color: lightslategray;
-}
-
-.sent-by-other {
-    flex-direction: row-reverse;
 }
 
 .send-message-group {
     display: flex;
-    width: 100%;
 }
 
-.send-message-group input {
-    width: 80%;
-    margin-left: 50px;
-    margin-right: 20px;
-} */
+.temp-third-component {
+    width: 20%;
+    height: 100vh;
+    background-color: red;
+}
