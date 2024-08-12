@@ -1,4 +1,5 @@
 import React from 'react'
+import './styles.css'
 
 const MessageComponent = ({ message, idMap }) => {
     // Function which returns time a message was sent if it was within the day, and date otherwise

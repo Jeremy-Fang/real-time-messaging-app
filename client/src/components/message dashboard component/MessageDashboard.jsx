@@ -131,16 +131,14 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
                                         }).join(', ')
                             }</h2>
                         </div>
-                        <div className='overflow-container'>
-                            <div className='messages-container'>
-                                {
-                                    selected == -1 ?
-                                        null :
-                                        chatroomData[selected].messages.map((message) => {
-                                            return <MessageComponent message={message} idMap={idMap} />
-                                        })
-                                }
-                            </div>
+                        <div className='messages-container'>
+                            {
+                                selected == -1 ?
+                                    null :
+                                    chatroomData[selected].messages.slice().reverse().map((message) => {
+                                        return <MessageComponent message={message} idMap={idMap} />
+                                    })
+                            }
                         </div>
                         <div className='send-message-group'>
                             <input value={message} onChange={(e) => setMessage(e.target.value)} />

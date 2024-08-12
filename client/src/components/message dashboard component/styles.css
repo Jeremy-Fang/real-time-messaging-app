@@ -129,30 +129,35 @@ img {
     margin-bottom: 10px;
 }
 
-.overflow-container {
-    max-height: 80%;
-    width: 100%;
-    background-color: green;
+.messages-container {
+    height: 80%;
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 20px;
+    border: 1px solid black;
     overflow-y: scroll;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
-.overflow-container::-webkit-scrollbar { /* WebKit */
-    width: 0;
-    height: 0;
-}
-
-.messages-container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
+.messages-container::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
 }
 
 .send-message-group {
+    margin: 0 20px;
     display: flex;
+    justify-content: space-between;
+}
+
+.send-message-group input {
+    width: 85%;
+    font-size: 0.9rem;
+}
+
+.send-message-group button {
+    width: 10%;
 }
 
 .temp-third-component {
