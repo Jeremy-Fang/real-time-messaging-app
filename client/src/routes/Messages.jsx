@@ -1,15 +1,26 @@
 import { React, useState, useEffect } from 'react'
 import { io } from 'socket.io-client'
-import './styles.css'
+import '../assets/styles/messages.css'
 
-import RecentMessageCard from './RecentMessageCard'
-import MessageComponent from './MessageComponent'
+import { useNavigate } from 'react-router-dom'
 
-const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
+import RecentMessageCard from '../components/RecentMessageCard'
+import MessageComponent from '../components/MessageComponent'
+
+const Messages = ({ socket, setSocket }) => {
+    const navigate = useNavigate()
     const [selected, setSelected] = useState(-1)
     const [chatroomData, setChatroomData] = useState(null)
     const [idMap, setIdMap] = useState(null)
     const [message, setMessage] = useState('')
+
+    // Helper function that sorts conversations by last message sent time
+    const sortConversationsFunction = (y, x) => {
+        let x_time = (x.messages.length == 0 ? -Infinity: new Date(x.messages[x.messages.length-1].time))
+        let y_time = (y.messages.length == 0 ? -Infinity: new Date(y.messages[y.messages.length-1].time))
+
+        return x_time - y_time
+    }
 
     const fetchMessagesData = async () => {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chatrooms/chats/${sessionStorage.getItem('uid')}`)
@@ -19,13 +30,13 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
             setSelected(0)
         }
 
-        setChatroomData(responseData.chatrooms)
+        setChatroomData(responseData.chatrooms.sort(sortConversationsFunction))
         setIdMap(responseData.memberMap)
         setSocket(io(import.meta.env.VITE_API_URL))
     }
 
     const sendMessage = () => {
-        if (selected != -1) {
+        if (selected != -1 && message != '') {
             socket?.emit('send-message', sessionStorage.getItem('uid'), chatroomData[selected]._id, message)
 
             setMessage('')
@@ -34,25 +45,29 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
 
     // Function that removes tokens from session storage and makes API request to invalidate token
     const logout = async () => {
-        await fetch(`${import.meta.env.VITE_API_URL}/api/users/logout`, {
-            method: 'POST',
-            body: JSON.stringify({ token: sessionStorage.getItem('token') }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(res => {
-            sessionStorage.removeItem('uid')
-            sessionStorage.removeItem('token')
-
-            setLoggedIn(false)
-            socket?.close()
-            changePage('login-page')
-        })
+        if (sessionStorage.getItem('token') != undefined) {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/users/logout`, {
+                method: 'POST',
+                body: JSON.stringify({ token: sessionStorage.getItem('token') }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => {
+                sessionStorage.removeItem('uid')
+                sessionStorage.removeItem('token')
+            })
+        }
+        socket?.close()
+        navigate('/login')
     }
 
     // Upon initial render, retrieve message data corresponding to user
     useEffect(() => {
-        fetchMessagesData()
+        if (sessionStorage.getItem('token') == undefined) {
+            navigate('/login')
+        } else {
+            fetchMessagesData()
+        }
     }, [])
 
     // Upon socket update, define event listeners to server
@@ -83,9 +98,10 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
                 updatedData.push(data)
             }
 
+            setChatroomData([...updatedData].sort(sortConversationsFunction))
+            
             // select selected convo to the latest message received
-            setSelected(updatedData.findIndex(chatroom => chatroom._id == room))
-            setChatroomData([...updatedData])
+            setSelected(0)
         })
 
         socket?.on('disconnect', async () => {
@@ -100,10 +116,11 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
                     <div className='side-bar-container'>
                         <h2>Messages</h2>
                         <div className='new-conversation-group'>
-                            <button className='new-conversation-button' onClick={() => changePage('search-page')}>+</button>
+                            <button className='new-conversation-button' onClick={() => navigate('/search')}>+</button>
                             <div>
                                 new conversation
                             </div>
+                            <button onClick={() => navigate('/profile')}></button>
                         </div>
                         <div className='recent-messages-container'>
                             {
@@ -118,7 +135,7 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
                     </div>
                     <div className='selected-conversation-container'>
                         <div className='message-header-group'>
-                            <h2>{
+                            <h1>{
                                 selected == -1 ?
                                     null :
                                     (chatroomData[selected].members.length == 2 ?
@@ -129,7 +146,7 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
                                         chatroomData[selected].members).map(member => {
                                             return idMap[member]
                                         }).join(', ')
-                            }</h2>
+                            }</h1>
                         </div>
                         <div className='messages-container'>
                             {
@@ -145,13 +162,10 @@ const MessageDashboard = ({ socket, setSocket, setLoggedIn, changePage }) => {
                             <button className='send-message-button' onClick={() => sendMessage()}>Send</button>
                         </div>
                     </div>
-                    <div className='temp-third-component'>
-                        Hello
-                    </div>
                 </div>
             </>
         )
     }
 }
 
-export default MessageDashboard
+export default Messages

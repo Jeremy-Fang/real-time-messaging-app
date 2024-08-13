@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-const SearchPage = ({ socket, openNewConvo }) => {
+const SearchPage = ({ socket }) => {
     const [searchResults, setSearchResults] = useState([])
     const [searchTerm, setSearchTerm] = useState('')
     const [typingQueue, setTypingQueue] = useState([])
@@ -31,8 +31,6 @@ const SearchPage = ({ socket, openNewConvo }) => {
         const data = await response.json()
 
         socket?.emit('create-room', data.chatroom._id)
-
-        openNewConvo()
     }
 
     useEffect(() => {

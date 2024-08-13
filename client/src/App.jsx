@@ -1,48 +1,39 @@
 import { useState } from 'react'
 
-import LoginForm from './components/login component/LoginForm'
-import CreateAccountForm from './components/login component/CreateAccountForm'
-import MessageDashboard from './components/message dashboard component/MessageDashboard'
-import SearchPage from './components/search component/Search'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+
+import Login from './routes/root'
+import CreateAccount from './routes/CreateAccountPage'
+import Messages from './routes/Messages'
+import Search from './routes/Search'
+import Profile from './routes/Profile'
 
 function App() {
-  const [isLoggedIn, setLoggedIn] = useState(false)
-  const [currentPage, setCurrentPage] = useState('login-page')
   const [socket, setSocket] = useState(null)
 
-  // If the user is logged in, redirect to message-dashboard
-  if (isLoggedIn) {
-    switch (currentPage) {
-      case 'search-page':
-        return (
-          <SearchPage socket={socket} openNewConvo={() => setCurrentPage('message-dashboard')}/>
-        )
-      default:
-        if (currentPage != 'message-dashboard') {
-          setCurrentPage('message-dashboard')
-        }
-        return (
-          <MessageDashboard socket={socket} setSocket={setSocket} setLoggedIn={setLoggedIn} changePage={setCurrentPage} />
-        )
+  const router = createBrowserRouter([
+    {
+      path: '*',
+      element: <Navigate to="/login" replace />
+    }, {
+      path: '/login',
+      element: <Login />
+    }, {
+      path: '/create-account',
+      element: <CreateAccount />
+    }, {
+      path: '/profile',
+      element: <Profile />
+    }, {
+      path: '/messages',
+      element: <Messages socket={socket} setSocket={setSocket} />
+    }, {
+      path: '/search',
+      element: <Search socket={socket} />
     }
-  } else {
-    // If the user is not logged in, toggle between create account and login pages
-    switch (currentPage) {
-      case 'create-account-page':
-        return (
-          <CreateAccountForm setPageToLogin={() => setCurrentPage('login-page')} />
-        )
-      default:
-        if (currentPage != 'login-page') {
-          setCurrentPage('login-page')
-        }
-        return (
-          <LoginForm login={() => {
-            setLoggedIn(true)
-          }} setPageCreateAccount={() => setCurrentPage('create-account-page')} />
-        )
-    }
-  }
+  ])
+
+  return <RouterProvider router={router} />
 }
 
 export default App
